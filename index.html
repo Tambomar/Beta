@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conservas de Pescado</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
+  <link rel="preload" href="banner/banner1.jpg" as="image">
+  <link rel="preload" href="logo.png" as="image">
+</head>
+<body class="font-sans">
+
+<!-- Menú responsivo -->
+<nav class="absolute top-0 left-0 w-full z-50 px-6 py-4 flex items-center justify-between text-white bg-transparent">
+  <img src="logo.png" alt="Logo Tambomar" class="w-28">
+  <button id="menuBtn" class="md:hidden text-white text-3xl" aria-label="Abrir menú móvil">&#9776;</button>
+  <div id="menu" class="hidden md:flex gap-6 text-sm md:text-base">
+    <a href="#nosotros" class="hover:text-yellow-300">Nosotros</a>
+    <a href="ecomerce.html" class="hover:text-yellow-300">Tienda virtual</a>
+    <a href="Blog.html" class="hover:text-yellow-300">Blog</a>
+    <a href="#mayor" class="hover:text-yellow-300">Compras por mayor</a>
+    <a href="#contacto" class="hover:text-yellow-300">Contacto</a>
+  </div>
+</nav>
+
+<!-- Menú móvil -->
+<div id="mobileMenu" class="md:hidden fixed top-16 left-0 w-full bg-black bg-opacity-80 text-white text-center hidden z-50">
+  <a href="#nosotros" class="block py-2 hover:bg-yellow-500" onclick="closeMobileMenu()">Nosotros</a>
+  <a href="ecomerce.html" class="block py-2 hover:bg-yellow-500" onclick="closeMobileMenu()">Tienda virtual</a>
+  <a href="Blog.html" class="block py-2 hover:bg-yellow-500" onclick="closeMobileMenu()">Blog</a>
+  <a href="#mayor" class="block py-2 hover:bg-yellow-500" onclick="closeMobileMenu()">Compras por mayor</a>
+  <a href="#contacto" class="block py-2 hover:bg-yellow-500" onclick="closeMobileMenu()">Contacto</a>
+</div>
+
+<!-- Header -->
+<header class="relative h-[90vh] bg-cover bg-center" style="background-image: url('banner/banner1.jpg');">
+  <div class="bg-black bg-opacity-60 h-full w-full flex flex-col justify-center items-center text-white text-center">
+    <img src="logo.png" alt="Logo Tambomar" class="w-80 mb-6">
+    <h1 class="text-4xl md:text-5xl font-bold">El placer del Mar</h1>
+    <p class="text-lg mt-2">y del mar Peruano</p>
+    <a href="#productos" class="mt-6 bg-white text-black px-6 py-2 rounded hover:bg-gray-200">Ver productos</a>
+  </div>
+</header>
+
+<!-- Productos destacados -->
+<section id="productos" class="py-16 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl font-bold text-center mb-12">Conservas de pescado</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <button onclick="showProductModal('atún')" class="bg-white shadow p-5 text-center cursor-pointer">
+      <img src="images/bonito.jpeg" alt="Atún" class="mx-auto mb-2 rounded-xl">
+      <p>Conservas de Atún</p>
+    </button>
+    <button onclick="showProductModal('caballa')" class="bg-white shadow p-5 text-center cursor-pointer">
+      <img src="images/bonito.jpeg" alt="Caballa" class="mx-auto mb-2 rounded-xl">
+      <p>Conservas de Caballa</p>
+    </button>
+    <button onclick="showProductModal('bonito')" class="bg-white shadow p-5 text-center cursor-pointer">
+      <img src="images/bonito.jpeg" alt="Bonito" class="mx-auto mb-2 rounded-xl">
+      <p>Conservas de Bonito</p>
+    </button>
+    <button onclick="showProductModal('jurel')" class="bg-white shadow p-5 text-center cursor-pointer">
+      <img src="images/bonito.jpeg" alt="Jurel" class="mx-auto mb-2 rounded-xl">
+      <p>Conservas de Jurel</p>
+    </button>
+  </div>
+  <div class="mt-6 flex justify-center">
+    <button onclick="showProductModal('anchoveta')" class="bg-white shadow p-4 text-center cursor-pointer w-64">
+      <img src="images/bonito.jpeg" alt="Anchoveta" class="mx-auto mb-2 rounded-xl">
+      <p>Conservas de Anchoveta</p>
+    </button>
+  </div>
+</section>
+
+<!-- Modal Producto Detalles -->
+<div id="productDetailsModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden">
+  <div class="bg-white rounded-lg max-w-2xl w-full p-6 relative overflow-auto max-h-[90vh]">
+    <button onclick="document.getElementById('productDetailsModal').classList.add('hidden')" class="absolute top-2 right-4 text-gray-500 text-3xl">&times;</button>
+    <h3 id="productTitle" class="text-2xl font-bold mb-4"></h3>
+    <p id="productBenefits" class="mb-4 text-gray-700"></p>
+    <div id="productImages" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+  </div>
+</div>
+
+<script>
+const productData = {
+  'atún': {
+    title: 'Conservas de Atún',
+    benefits: 'Rico en omega-3, proteínas de alta calidad y bajo en grasas saturadas. Ideal para la salud cardiovascular y la energía diaria.',
+    images: ['images/fatun.png']
+  },
+  'caballa': {
+    title: 'Conservas de Caballa',
+    benefits: 'Excelente fuente de ácidos grasos omega-3, vitamina D y B12. Contribuye al sistema inmunológico y a la salud cerebral.',
+    images: ['images/fcaballa.png']
+  },
+  'bonito': {
+    title: 'Conservas de Bonito',
+    benefits: 'Alto contenido proteico, ideal para una dieta equilibrada. Contiene nutrientes esenciales como fósforo, selenio y niacina.',
+    images: ['images/fbonito.png']
+  },
+  'jurel': {
+    title: 'Conservas de Jurel',
+    benefits: 'Fuente importante de omega-3 y proteínas. Beneficia la memoria, el corazón y el sistema circulatorio.',
+    images: ['images/fjurel.png']
+  },
+  'anchoveta': {
+    title: 'Conservas de Anchoveta',
+    benefits: 'Pequeño en tamaño pero poderoso en nutrientes. Rico en calcio, hierro y omega-3. Fortalece huesos y combate la anemia.',
+    images: ['images/anchoveta.png']
+  }
+};
+
+function showProductModal(type) {
+  const data = productData[type];
+  document.getElementById('productTitle').textContent = data.title;
+  document.getElementById('productBenefits').textContent = data.benefits;
+  const container = document.getElementById('productImages');
+  container.innerHTML = '';
+  data.images.forEach(img => {
+    const el = document.createElement('img');
+    el.src = img;
+    el.alt = data.title;
+    el.className = 'rounded-xl w-full object-cover';
+    container.appendChild(el);
+  });
+  document.getElementById('productDetailsModal').classList.remove('hidden');
+}
+</script>
+
+<!-- Video Nosotros -->
+<section id="nosotros" class="relative h-[60vh] overflow-hidden my-16">
+  <video autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
+    <source src="video/video1.mp4" type="video/mp4">
+  </video>
+  <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-10 flex items-center justify-center">
+    <h2 class="text-white text-3xl md:text-4xl font-semibold text-center px-4">"Calidad y Pasión" detrás de una gran marca</h2>
+  </div>
+</section>
+
+<!-- Tienda virtual -->
+<section id="tienda" class="py-12 px-6 max-w-7xl mx-auto">
+  <h2 class="text-2xl font-bold text-center mb-8">Nuestra selección de conservas</h2>
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="text-center"><img src="images/fatun.png" class="mx-auto mb-2 rounded-xl"><p>Filete de Atún en Aceite</p></div>
+    <div class="text-center"><img src="images/fbonito.png" class="mx-auto mb-2 rounded-xl"><p>Filete de Bonito en Aceite</p></div>
+    <div class="text-center"><img src="images/fcaballa.png" class="mx-auto mb-2 rounded-xl"><p>Filete de Caballa en Aceite</p></div>
+    <div class="text-center"><img src="images/fjurel.png" class="mx-auto mb-2 rounded-xl"><p>Filete de Jurel en Aceite</p></div>
+    <div class="text-center"><img src="images/anchoveta.png" class="mx-auto mb-2 rounded-xl"><p>Entero de Anchoveta en aceite</p></div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section id="blog" class="py-16 px-6 max-w-7xl mx-auto">
+  <h2 class="text-2xl font-bold mb-6 text-center">Últimos artículos del blog</h2>
+  <div id="blogPosts" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+</section>
+
+<!-- Mayoristas -->
+<section id="mayor" class="py-16 px-6 max-w-7xl mx-auto text-center bg-gray-50">
+  <h2 class="text-2xl font-bold mb-4">¿Compras por mayor?</h2>
+  <p class="text-gray-700">Contáctanos directamente para precios especiales, atención personalizada y entrega rápida.</p>
+  <p class="text-gray-500">*Compra minima 50 cajas.</p>
+  <button onclick="document.getElementById('formModal').classList.remove('hidden')" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Solicitar</button>
+</section>
+
+<!-- Modal Formulario -->
+<div id="formModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+    <button onclick="document.getElementById('formModal').classList.add('hidden')" class="absolute top-2 right-3 text-gray-500 text-2xl">&times;</button>
+    <h3 class="text-xl font-bold mb-4">Formulario de Solicitud</h3>
+    <form>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Nombre completo *</label>
+        <input type="text" required class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">DNI *</label>
+        <input type="text" required class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Teléfono *</label>
+        <input type="tel" required class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Correo electrónico</label>
+        <input type="email" class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Razón social</label>
+        <input type="text" class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">RUC</label>
+        <input type="text" class="w-full border px-3 py-2 rounded">
+      </div>
+      <p class="text-sm text-gray-600 mb-4">Nos comunicaremos contigo a la brevedad. Tus datos serán usados únicamente con fines comerciales y no serán compartidos con terceros.</p>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Enviar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer id="contacto" class="bg-gray-900 text-white py-10">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div>
+      <h4 class="font-semibold mb-2">Contacto</h4>
+      <p>Tel. Ventas: +51 987 654 321</p>
+      <p>Atención al público: +51 912 345 678</p>
+      <p>Email ventas: ventas@tuempresa.com</p>
+      <p>Email soporte: atencion@tuempresa.com</p>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-2">Redes Sociales</h4>
+      <div class="flex gap-4 mt-2">
+        <a href="#"><img src="icons/facebook.png" alt="Facebook" class="w-6 h-6"></a>
+        <a href="#"><img src="icons/instagram.png" alt="Instagram" class="w-6 h-6"></a>
+        <a href="#"><img src="icons/linkedin.png" alt="LinkedIn" class="w-6 h-6"></a>
+        <a href="#"><img src="icons/tiktok.png" alt="TikTok" class="w-6 h-6"></a>
+      </div>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-2">Ubicación</h4>
+      <p>Calle Mar 123, Lima - Perú</p>
+      <p>Lunes a Viernes: 9am - 6pm</p>
+    </div>
+  </div>
+  <div class="text-center text-sm text-gray-400 mt-6">&copy; 2025 Conservas del Mar. Todos los derechos reservados.</div>
+</footer>
+
+<script>
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.toggle('hidden');
+  });
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.add('hidden');
+  }
+</script>
+
+<script>
+  fetch('blogart.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Archivo no encontrado o error de red");
+      }
+      return response.json();
+    })
+    .then(data => {
+      const container = document.getElementById('blogPosts');
+      container.innerHTML = ""; // Limpiar contenido anterior
+      const latestPosts = data.slice(0, 3); // Solo los 3 primeros
+
+      latestPosts.forEach(post => {
+        const article = document.createElement('article');
+        article.className = 'bg-white shadow rounded overflow-hidden hover:shadow-lg transition';
+
+        article.innerHTML = `
+          <img src="${post.img}" alt="${post.title}" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h3 class="text-xl font-bold mb-2">${post.title}</h3>
+            <p class="text-sm text-gray-600 mb-3">${post.excerpt}</p>
+            <a href="Blog.html#${post.id}" class="text-blue-600 font-semibold hover:underline">Leer más</a>
+          </div>
+        `;
+
+        container.appendChild(article);
+      });
+    })
+    .catch(error => {
+      console.error("Error al cargar los artículos del blog:", error);
+      document.getElementById('blogPosts').innerHTML = '<p class="text-center text-red-600">No se pudieron cargar los artículos.</p>';
+    });
+</script>
+
+</body>
+</html>

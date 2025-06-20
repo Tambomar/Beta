@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Virtual Tambomar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+  <!-- Header con botón de carrito -->
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-semibold">Tienda Virtual Tambomar</h1>
+    <button id="openCartBtn" class="bg-blue-600 text-white px-4 py-2 rounded">🛒 Carrito</button>
+  </header>
+
+  <!-- Productos disponibles -->
+  <section class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="bg-white p-4 rounded shadow" data-id="1" data-nombre="Caballa en Aceite" data-precio="12" data-stock="10">
+      <h2 class="text-lg font-bold">Caballa en Aceite</h2>
+      <p>S/ 12.00</p>
+      <p class="text-sm text-gray-500">Stock: 10</p>
+      <button class="addToCart bg-green-600 text-white px-3 py-1 mt-2 rounded">Agregar</button>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow" data-id="2" data-nombre="Atún Premium" data-precio="15" data-stock="5">
+      <h2 class="text-lg font-bold">Atún Premium</h2>
+      <p>S/ 15.00</p>
+      <p class="text-sm text-gray-500">Stock: 5</p>
+      <button class="addToCart bg-green-600 text-white px-3 py-1 mt-2 rounded">Agregar</button>
+    </div>
+  </section>
+
+  <!-- Modal del Carrito -->
+  <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white w-full max-w-lg p-6 rounded shadow-lg relative">
+      <h2 class="text-xl font-semibold mb-4">🛒 Tu Carrito</h2>
+      <div id="cartItems" class="space-y-4 max-h-64 overflow-y-auto"></div>
+      <div class="mt-4 font-bold text-right">Total: S/ <span id="cartTotal">0</span></div>
+      <div class="flex justify-end gap-2 mt-4">
+        <button id="checkoutBtn" class="bg-blue-600 text-white px-4 py-2 rounded">Finalizar Compra</button>
+        <button id="closeCartBtn" class="bg-gray-300 px-4 py-2 rounded">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const productos = document.querySelectorAll('.addToCart');
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function guardarCarrito() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function renderCarrito() {
+      const contenedor = document.getElementById('cartItems');
+      const totalSpan = document.getElementById('cartTotal');
+      contenedor.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        contenedor.innerHTML = '<p class="text-gray-500 text-center">Tu carrito está vacío.</p>';
+      }
+
+      cart.forEach(producto => {
+        total += producto.precio * producto.cantidad;
+
+        const item = document.createElement('div');
+        item.classList.add('flex', 'justify-between', 'items-center', 'border-b', 'pb-2');
+
+        item.innerHTML = `
+          <div>
+            <p class="font-semibold">${producto.nombre}</p>
+            <p>S/ ${producto.precio} x ${producto.cantidad}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="actualizarCantidad(${producto.id}, -1)" class="bg-gray-200 px-2">-</button>
+            <span>${producto.cantidad}</span>
+            <button onclick="actualizarCantidad(${producto.id}, 1)" class="bg-gray-200 px-2">+</button>
+            <button onclick="eliminarDelCarrito(${producto.id})" class="text-red-600 ml-2">🗑️</button>
+          </div>
+        `;
+        contenedor.appendChild(item);
+      });
+
+      totalSpan.textContent = total.toFixed(2);
+    }
+function addToCart(nombre, precioUnitario, index) {
+  const select = document.querySelectorAll(".cantidad-select")[index];
+  const cantidad = parseInt(select.value);
+  let descuento = 0;
+  if (cantidad === 24) descuento = 0.02;
+  if (cantidad === 48) descuento = 0.05;
+  const total = precioUnitario * cantidad * (1 - descuento);
+
+  // Verificar si el producto ya está en el carrito
+  const itemIndex = carrito.findIndex(item => item.nombre === nombre);
+  if (itemIndex !== -1) {
+    // Si existe, sumar cantidad y total
+    carrito[itemIndex].cantidad += cantidad;
+    carrito[itemIndex].total = (parseFloat(carrito[itemIndex].total) + total).toFixed(2);
+  } else {
+    // Si no existe, agregar nuevo producto
+    carrito.push({ nombre, cantidad, total: total.toFixed(2) });
+  }
+
+  saveCart();
+  updateCartCount();
+}
+
+
+    function actualizarCantidad(id, cambio) {
+      const producto = cart.find(p => p.id === id);
+      if (!producto) return;
+
+      const nuevoValor = producto.cantidad + cambio;
+      if (nuevoValor > producto.stock) {
+        alert('No hay más stock disponible.');
+        return;
+      }
+      if (nuevoValor <= 0) {
+        eliminarDelCarrito(id);
+      } else {
+        producto.cantidad = nuevoValor;
+      }
+      guardarCarrito();
+      renderCarrito();
+    }
+
+    function eliminarDelCarrito(id) {
+      const index = cart.findIndex(p => p.id === id);
+      if (index !== -1) {
+        cart.splice(index, 1);
+      }
+      guardarCarrito();
+      renderCarrito();
+    }
+
+    productos.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('div');
+        const id = parseInt(card.dataset.id);
+        const nombre = card.dataset.nombre;
+        const precio = parseFloat(card.dataset.precio);
+        const stock = parseInt(card.dataset.stock);
+        agregarAlCarrito(id, nombre, precio, stock);
+      });
+    });
+
+    document.getElementById('openCartBtn').addEventListener('click', () => {
+      document.getElementById('cartModal').classList.remove('hidden');
+      renderCarrito();
+    });
+
+    document.getElementById('closeCartBtn').addEventListener('click', () => {
+      document.getElementById('cartModal').classList.add('hidden');
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (cart.length === 0) return alert('Tu carrito está vacío.');
+      alert('Gracias por tu compra!');
+      cart.length = 0;
+      guardarCarrito();
+      renderCarrito();
+      document.getElementById('cartModal').classList.add('hidden');
+    });
+
+    window.addEventListener('load', renderCarrito);
+  </script>
+</body>
+</html>
